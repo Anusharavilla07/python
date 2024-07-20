@@ -1,0 +1,46 @@
+import pandas as pd
+d=pd.read_csv("/content/01.Data Cleaning and Preprocessing.csv")
+df=pd.DataFrame(d)
+print(df)
+df.loc[df['ChipRate']<25.00]
+df.loc[df['BF-CMratio']<100.00]
+df.loc[df['Y-Kappa']<100.00]
+df.shape
+df.isnull()
+df.isnull().sum()
+
+
+#filling missing values
+df2=df.fillna(value=0)
+df2
+df2.isnull().sum()
+
+#filling values with previous values
+df4=df.fillna(method='pad')
+df4
+df4.isnull().sum()
+
+#filling values with next values
+df5=df.fillna(method='pad')
+df5
+df6=df.fillna(method='pad',axis=1)
+df6
+
+#filling with mean value
+df9=df.fillna(value=df['Y-Kappa'].mean())
+df9
+
+#dropping null values
+df10=df.dropna()
+df10
+df11=df.dropna(how='any')
+df11
+
+#replacing null value
+import numpy as np
+df12=df.replace(to_replace=np.nan,value=87546)
+df12
+
+#interpolate
+df13=df['BF-CMratio']=df['ChipRate'].interpolate(method='linear')
+df13
