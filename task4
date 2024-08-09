@@ -1,0 +1,63 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load your dataset
+# df = pd.read_csv('your_dataset.csv')
+
+# Example dataset (You can replace this with your dataset)
+# Replace with your actual dataset loading code
+df = sns.load_dataset('tips')
+
+# 1. Distribution of Variables
+
+# Histogram for continuous variables
+df.hist(bins=30, figsize=(15, 10))
+plt.suptitle('Histogram of Continuous Variables')
+plt.show()
+
+# Density Plot
+df.plot(kind='density', subplots=True, layout=(4,4), sharex=False, figsize=(15, 10))
+plt.suptitle('Density Plot of Continuous Variables')
+plt.show()
+
+# Box Plot for continuous variables
+plt.figure(figsize=(15, 10))
+sns.boxplot(data=df)
+plt.title('Box Plot of Continuous Variables')
+plt.xticks(rotation=90)
+plt.show()
+
+# 2. Identify Outliers
+
+# Box Plot (as above)
+plt.figure(figsize=(15, 10))
+sns.boxplot(data=df)
+plt.title('Box Plot to Identify Outliers')
+plt.xticks(rotation=90)
+plt.show()
+
+# Scatter Plot to identify outliers in bivariate data
+sns.pairplot(df)
+plt.suptitle('Scatter Plot to Identify Outliers', y=1.02)
+plt.show()
+
+# 3. Correlation Between Variables
+
+# Heatmap for correlation
+plt.figure(figsize=(12, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm', center=0)
+plt.title('Heatmap of Correlation Between Variables')
+plt.show()
+
+# Pair Plot for pairwise relationships
+sns.pairplot(df)
+plt.suptitle('Pair Plot of Variables', y=1.02)
+plt.show()
+
+# Scatter Plot for specific variables to check correlation (Example: 'total_bill' vs 'tip')
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x='total_bill', y='tip', data=df)
+plt.title('Scatter Plot: total_bill vs tip')
+plt.show()
