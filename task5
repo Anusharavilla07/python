@@ -1,0 +1,57 @@
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectFromModel
+import matplotlib.pyplot as plt
+
+# Load dataset
+iris = load_iris()
+X = pd.DataFrame(iris.data, columns=iris.feature_names)
+y = iris.target
+
+# Feature Engineering (Example: Adding new feature by combining existing ones)
+X['sepal_length_to_width_ratio'] = X['sepal length (cm)'] / X['sepal width (cm)']
+
+# Splitting the dataset into train and test
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Standardize the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Dimensionality Reduction using PCA
+pca = PCA(n_components=2)  # Reduce to 2 components for visualization
+X_train_pca = pca.fit_transform(X_train_scaled)
+X_test_pca = pca.transform(X_test_scaled)
+
+# Plot PCA result (optional)
+plt.figure(figsize=(8,6))
+plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1], c=y_train)
+plt.xlabel('PCA Component 1')
+plt.ylabel('PCA Component 2')
+plt.title('PCA of Iris Dataset')
+plt.show()
+
+# Feature Selection using Feature Importance (Random Forest)
+clf = RandomForestClassifier(random_state=42)
+clf.fit(X_train, y_train)
+
+# Get feature importances and select the most important ones
+sfm = SelectFromModel(clf, threshold=0.1)  # Adjust threshold as needed
+sfm.fit(X_train, y_train)
+
+# Transform the dataset to contain only the selected features
+X_train_selected = sfm.transform(X_train)
+X_test_selected = sfm.transform(X_test)
+
+# Train a new model on the selected features
+clf_selected = RandomForestClassifier(random_state=42)
+clf_selected.fit(X_train_selected, y_train)
+
+# Evaluate model
+score = clf_selected.score(X_test_selected, y_test)
+print(f'Accuracy with selected features: {score:.2f}')
