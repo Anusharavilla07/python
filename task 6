@@ -1,0 +1,59 @@
+#Time Series Analysis
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.arima.model import ARIMA
+url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/airline-passengers.csv'
+data = pd.read_csv(url, index_col='Month', parse_dates=True)
+decomposition = seasonal_decompose(data['Passengers'], model='multiplicative')
+decomposition.plot()
+plt.show()
+model = ARIMA(data['Passengers'], order=(5,1,0))  # Example order; should be tuned
+model_fit = model.fit()
+forecast = model_fit.forecast(steps=12)
+print(forecast)
+
+
+
+#Sentiment Analysis on Unstructured Data
+import pandas as pd
+from textblob import TextBlob
+data = {'text': ['I love this product!', 'This is the worst service ever.', 'Amazing experience!', 'Not bad, but could be better.']}
+df = pd.DataFrame(data)
+def get_sentiment(text):
+    analysis = TextBlob(text)
+    return analysis.sentiment.polarity
+df['sentiment'] = df['text'].apply(get_sentiment)
+print(df)
+
+
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+
+iris = load_iris()
+X = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+
+kmeans = KMeans(n_clusters=3, random_state=42)  # Assuming we want 3 clusters
+X['cluster'] = kmeans.fit_predict(X_scaled)
+
+
+plt.figure(figsize=(8,6))
+plt.scatter(X['sepal length (cm)'], X['sepal width (cm)'], c=X['cluster'], cmap='viridis')
+plt.xlabel('Sepal Length (cm)')
+plt.ylabel('Sepal Width (cm)')
+plt.title('KMeans Clustering of Iris Dataset')
+plt.show()
+
+
+print(X[['sepal length (cm)', 'sepal width (cm)', 'cluster']].head())
+
